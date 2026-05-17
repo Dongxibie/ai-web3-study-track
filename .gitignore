@@ -1,0 +1,11 @@
+.env
+.env.local
+node_modules/
+.DS_Store
+Thumbs.db
+artifacts/
+cache/
+out/
+broadcast/
+*.log
+screenshots/*.png
