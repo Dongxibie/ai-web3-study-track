@@ -23,7 +23,9 @@ ai-web3-study-track/
 ├── notes/            # Weekly notes and concept docs
 ├── daily-notes/      # Daily learning logs
 ├── demos/            # Experiment projects
-├── prompts/          # Prompt collections by tool
+├── hackathon/        # Hackathon projects
+│   ├── contracts/
+│   └── demo/
 ├── screenshots/      # Visual records
 └── logs/             # Learning progress log
 ```
