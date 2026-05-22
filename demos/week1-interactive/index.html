@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Week 1 Interactive · AI x Web3 Study Track</title>
+<style>
+  :root {
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel2:#1f242d;
+    --border:#2a3140;
+    --text:#e6e8eb;
+    --muted:#9aa3b2;
+    --accent:#7cc4ff;
+    --accent2:#a78bfa;
+    --ok:#5ad19c;
+    --warn:#ffb454;
+    --bad:#ff7a7a;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;}
+  a{color:var(--accent)}
+  header{padding:36px 24px 12px;max-width:1080px;margin:0 auto}
+  header h1{margin:0 0 6px;font-size:26px;letter-spacing:.2px}
+  header p{margin:0;color:var(--muted)}
+  main{max-width:1080px;margin:0 auto;padding:8px 24px 60px}
+  section{margin-top:36px}
+  h2{font-size:18px;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  h2 .tag{font:11px/1 var(--mono);padding:3px 7px;border:1px solid var(--border);border-radius:999px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .grid{display:grid;gap:14px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 18px;
+    perspective:1000px;
+    cursor:pointer;
+    min-height:200px;
+    position:relative;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .card:hover{border-color:#3b4458;transform:translateY(-1px)}
+  .card .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .card.flipped .inner{transform:rotateY(180deg)}
+  .card .face{position:absolute;inset:0;backface-visibility:hidden}
+  .card .back{transform:rotateY(180deg)}
+  .card h3{margin:0 0 10px;font-size:16px;color:var(--accent)}
+  .card .hint{position:absolute;bottom:10px;right:14px;font:11px/1 var(--mono);color:var(--muted)}
+  .card ul{margin:4px 0 0 18px;padding:0;color:var(--text)}
+  .card li{margin-bottom:4px}
+  .card .back ul{color:var(--muted)}
+  .card .back h3{color:var(--accent2)}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px}
+  .demo{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:760px){.demo{grid-template-columns:1fr}}
+  label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-family:var(--mono)}
+  input[type=number],input[type=text]{
+    width:100%;padding:9px 11px;background:var(--panel2);border:1px solid var(--border);
+    border-radius:8px;color:var(--text);font:13px/1.4 var(--mono);outline:none
+  }
+  input:focus{border-color:var(--accent)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .row{display:flex;gap:10px}
+  .row > *{flex:1}
+  .kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--border);font-family:var(--mono);font-size:13px}
+  .kv:last-child{border-bottom:0}
+  .kv span:first-child{color:var(--muted)}
+  .kv span:last-child{color:var(--text)}
+  .num-ok{color:var(--ok)!important}
+  .num-warn{color:var(--warn)!important}
+  .num-bad{color:var(--bad)!important}
+  pre{background:#0b0d11;border:1px solid var(--border);border-radius:8px;padding:12px;
+      overflow:auto;font:12px/1.55 var(--mono);color:#cfd3dc;margin:8px 0 0}
+  details{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:10px}
+  details summary{cursor:pointer;color:var(--muted);font-size:13px}
+  details[open] summary{color:var(--text);margin-bottom:6px}
+  /* quiz */
+  .q{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+  .q .qhead{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}
+  .q .qtag{font:11px/1 var(--mono);padding:3px 7px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+  .q .qtext{font-weight:500}
+  .opts{display:grid;gap:6px;margin-top:10px}
+  .opts button{
+    text-align:left;background:var(--panel2);border:1px solid var(--border);color:var(--text);
+    padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;transition:.1s
+  }
+  .opts button:hover{border-color:#3b4458}
+  .opts button.right{border-color:var(--ok);background:rgba(90,209,156,.08)}
+  .opts button.wrong{border-color:var(--bad);background:rgba(255,122,122,.08)}
+  .opts button:disabled{cursor:default;opacity:.85}
+  .explain{margin-top:10px;font-size:13px;color:var(--muted);padding:8px 10px;background:var(--panel2);border-radius:8px;display:none}
+  .explain.show{display:block}
+  .score{font-family:var(--mono);color:var(--muted);margin-top:14px}
+  footer{max-width:1080px;margin:40px auto 30px;padding:0 24px;color:var(--muted);font-size:12px}
+  code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Week 1 · 三个概念，一次小考</h1>
+  <p>钱包/签名/交易 · Gas/合约执行 · LLM/Agent/Workflow。点卡片翻面看 TL;DR，下方有 Gas 计算器和 9 题小测。</p>
+</header>
+
+<main>
+
+<section>
+  <h2>1. 概念卡片 <span class="tag">click to flip</span></h2>
+  <div class="grid cards" id="cards"></div>
+</section>
+
+<section>
+  <h2>2. EIP-1559 Gas 计算器 <span class="tag">demo</span></h2>
+  <div class="panel">
+    <div class="demo">
+      <div>
+        <label>To (任意地址，仅用于展示 tx 结构)</label>
+        <input id="to" type="text" value="0x000000000000000000000000000000000000dEaD" />
+
+        <label>Value (ETH)</label>
+        <input id="value" type="number" step="0.001" min="0" value="0.05" />
+
+        <div class="row">
+          <div>
+            <label>Gas Limit (units)</label>
+            <input id="gasLimit" type="number" min="21000" step="1000" value="21000" />
+          </div>
+          <div>
+            <label>当前 Base Fee (gwei)</label>
+            <input id="baseFee" type="number" step="0.1" min="0" value="20" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Max Fee Per Gas (gwei)</label>
+            <input id="maxFee" type="number" step="0.1" min="0" value="40" />
+          </div>
+          <div>
+            <label>Max Priority Fee / Tip (gwei)</label>
+            <input id="tip" type="number" step="0.1" min="0" value="1.5" />
+          </div>
+        </div>
+
+        <label>模拟 base fee 变化（拖动观察实际费用）</label>
+        <input id="baseFeeSim" type="range" min="0" max="200" step="0.5" value="20" />
+        <div style="font-family:var(--mono);font-size:12px;color:var(--muted)">
+          模拟 base fee = <span id="baseFeeSimLabel">20</span> gwei
+        </div>
+
+        <details>
+          <summary>这些字段是什么意思？（点开）</summary>
+          <div style="font-size:13px;color:var(--muted);margin-top:6px">
+            <p><b>Base fee</b>：由协议根据上一区块拥堵程度自动调节，<b>被销毁</b>，不进矿工/验证者口袋。</p>
+            <p><b>Max Priority Fee (tip)</b>：你愿意额外付给验证者的"小费"。</p>
+            <p><b>Max Fee Per Gas</b>：你为每个 gas 愿意付的上限。<b>实际单价 = min(maxFee, baseFee + tip)</b>。</p>
+            <p><b>Gas Limit</b>：本次交易最多消耗多少个 gas 单位（普通转账 = 21000）。</p>
+          </div>
+        </details>
+      </div>
+
+      <div>
+        <div class="kv"><span>有效 gas 单价</span><span id="effPrice">—</span></div>
+        <div class="kv"><span>↳ 烧掉 (base × gas)</span><span id="burn">—</span></div>
+        <div class="kv"><span>↳ 付给验证者 (tip × gas)</span><span id="toMiner">—</span></div>
+        <div class="kv"><span>Gas 费上限 (maxFee × gasLimit)</span><span id="maxCost">—</span></div>
+        <div class="kv"><span>实际 Gas 费</span><span id="actualGasCost">—</span></div>
+        <div class="kv"><span>Value (转出本金)</span><span id="valOut">—</span></div>
+        <div class="kv"><span style="color:var(--text)"><b>钱包总扣款</b></span><span id="total" style="color:var(--accent)"><b>—</b></span></div>
+
+        <label style="margin-top:14px">Tx payload（EIP-1559 type 2，简化版）</label>
+        <pre id="txjson">—</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>3. 小测验 <span class="tag">9 questions</span></h2>
+  <div id="quiz"></div>
+  <div class="score" id="score">尚未作答</div>
+</section>
+
+</main>
+
+<footer>
+  数字仅用于教学演示，不构成任何投资 / 操作建议。地址栏不会连接钱包、不会发送任何真实交易。
+</footer>
+
+<script>
+/* ========== 1. concept cards ========== */
+const CARDS = [
+  {
+    title:"钱包 / 签名 / 交易",
+    front:[
+      "私钥 → 公钥 → 地址（Keccak-256 后 20 字节）",
+      "签名 = 用私钥对 tx hash 做 ECDSA",
+      "节点用公钥验证签名 → 决定谁付钱"
+    ],
+    backTitle:"为什么不需要把私钥发出去？",
+    back:[
+      "签名同时包含 r, s, v —— v 让验证方从签名反推出公钥",
+      "因此节点只看到签名+消息，私钥从不离开钱包",
+      "助记词 = 派生私钥的种子，丢失即彻底失控"
+    ]
+  },
+  {
+    title:"Gas / 合约执行",
+    front:[
+      "Gas = EVM 执行 opcode 的计量单位",
+      "转账固定 21000；调用合约取决于 opcode 组合",
+      "EIP-1559：实际单价 = min(maxFee, baseFee + tip)"
+    ],
+    backTitle:"为什么交易会失败但还扣 gas？",
+    back:[
+      "执行过程中 revert / out-of-gas，状态回滚",
+      "但已消耗的算力无法回收，gas 照付",
+      "所以 estimateGas 很重要，不要乱填 gasLimit"
+    ]
+  },
+  {
+    title:"LLM / Agent / Workflow",
+    front:[
+      "LLM：给定上下文预测下一个 token",
+      "Agent：Reason → Act (tool) → Observe → 循环",
+      "Workflow：把 agent 串成有控制流的固定管道"
+    ],
+    backTitle:"Agent 和 Workflow 怎么选？",
+    back:[
+      "任务路径已知 → Workflow（更便宜、可预测）",
+      "任务需要边做边决定 → Agent（更贵、更灵活）",
+      "实战通常混用：Workflow 框架 + 关键节点 Agent 决策"
+    ]
+  }
+];
+const cardsEl = document.getElementById("cards");
+CARDS.forEach((c,i)=>{
+  const li = (arr)=>arr.map(x=>`<li>${x}</li>`).join("");
+  const el = document.createElement("div");
+  el.className = "card";
+  el.innerHTML = `
+    <div class="inner">
+      <div class="face front">
+        <h3>${c.title}</h3>
+        <ul>${li(c.front)}</ul>
+        <span class="hint">click ↻</span>
+      </div>
+      <div class="face back">
+        <h3>${c.backTitle}</h3>
+        <ul>${li(c.back)}</ul>
+        <span class="hint">click ↺</span>
+      </div>
+    </div>`;
+  el.addEventListener("click",()=>el.classList.toggle("flipped"));
+  cardsEl.appendChild(el);
+});
+
+/* ========== 2. EIP-1559 calculator ========== */
+const $ = id=>document.getElementById(id);
+const ids = ["to","value","gasLimit","baseFee","maxFee","tip","baseFeeSim"];
+ids.forEach(id => $(id).addEventListener("input", recalc));
+
+function fmtGwei(n){ return (n).toFixed(3).replace(/\.?0+$/,"") + " gwei"; }
+function fmtEth(n){ return n.toFixed(8).replace(/\.?0+$/,"") + " ETH"; }
+
+function recalc(){
+  const value = parseFloat($("value").value)||0;
+  const gasLimit = parseInt($("gasLimit").value)||0;
+  const baseFee = parseFloat($("baseFee").value)||0; // user input
+  const maxFee = parseFloat($("maxFee").value)||0;
+  const tip = parseFloat($("tip").value)||0;
+  const baseSim = parseFloat($("baseFeeSim").value)||0;
+  $("baseFeeSimLabel").textContent = baseSim;
+
+  // effective price uses the SIMULATED base fee (drag slider to observe)
+  const effGwei = Math.min(maxFee, baseSim + tip);
+  const burnGwei = Math.min(effGwei, baseSim);
+  const minerGwei = Math.max(0, effGwei - burnGwei);
+
+  const gweiToEth = g => (g * gasLimit) / 1e9;
+  const actualGasEth = gweiToEth(effGwei);
+  const burnEth = gweiToEth(burnGwei);
+  const minerEth = gweiToEth(minerGwei);
+  const maxCostEth = gweiToEth(maxFee);
+  const totalEth = actualGasEth + value;
+
+  $("effPrice").textContent = fmtGwei(effGwei);
+  $("effPrice").className = effGwei >= maxFee ? "num-warn" : "";
+  $("burn").textContent = fmtEth(burnEth) + "  (" + fmtGwei(burnGwei) + ")";
+  $("toMiner").textContent = fmtEth(minerEth) + "  (" + fmtGwei(minerGwei) + ")";
+  $("maxCost").textContent = fmtEth(maxCostEth);
+  $("actualGasCost").textContent = fmtEth(actualGasEth);
+  $("valOut").textContent = fmtEth(value);
+  $("total").innerHTML = "<b>" + fmtEth(totalEth) + "</b>";
+
+  // warning: if base fee shoots above maxFee, tx won't be included until baseFee drops
+  if (baseSim > maxFee) {
+    $("effPrice").className = "num-bad";
+    $("effPrice").textContent += "  ⚠ baseFee > maxFee, 不会被打包";
+  } else if (baseSim + tip > maxFee) {
+    $("effPrice").className = "num-warn";
+    $("effPrice").textContent += "  ⚠ 被 maxFee 截断，tip 实际 = " + fmtGwei(minerGwei);
+  }
+
+  const tx = {
+    type: 2,
+    chainId: 11155111,
+    to: $("to").value,
+    value: "0x" + Math.round(value*1e18).toString(16),
+    gasLimit: gasLimit,
+    maxFeePerGas: maxFee + " gwei",
+    maxPriorityFeePerGas: tip + " gwei",
+    nonce: "<填入账户当前 nonce>",
+    data: "0x",
+    accessList: []
+  };
+  $("txjson").textContent = JSON.stringify(tx, null, 2);
+}
+recalc();
+
+/* ========== 3. quiz ========== */
+const QUIZ = [
+  // wallet/sign/tx
+  { topic:"钱包/Tx", q:"我把交易发到链上时，发送给节点的是？",
+    opts:[
+      "私钥 + 交易内容",
+      "交易内容 + 用私钥对其 hash 的签名",
+      "公钥 + 交易内容 + 助记词",
+      "地址 + 交易内容（节点会去钱包里找私钥）"
+    ], a:1,
+    why:"节点拿到的是 tx + signature。验证方用签名反推出公钥，再算出地址比对，全程私钥不出钱包。"
+  },
+  { topic:"钱包/Tx", q:"两笔从同一账户发出的交易先后顺序由什么决定？",
+    opts:["发送时间戳","Gas Price 高低","Nonce 递增","随机洗牌"],
+    a:2,
+    why:"nonce 是账户级别的递增计数器。nonce=5 没上链前，nonce=6 不会被处理。"
+  },
+  { topic:"钱包/Tx", q:"以下哪种操作最危险？",
+    opts:[
+      "把公钥发给朋友",
+      "在 Etherscan 看自己的地址",
+      "把助记词截图存进相册",
+      "在 testnet 上随便发交易"
+    ], a:2,
+    why:"助记词 = 派生所有私钥的种子。截图、云相册、聊天记录都是常见泄漏路径。"
+  },
+  // gas/EVM
+  { topic:"Gas/EVM", q:"EIP-1559 下，base fee 去了哪里？",
+    opts:["进矿工/验证者口袋","被销毁 (burn)","进协议金库","退还给用户"],
+    a:1,
+    why:"base fee 直接 burn 销毁，所以 ETH 的发行有了"销毁对冲"。tip 才是验证者收入。"
+  },
+  { topic:"Gas/EVM", q:"一笔 EIP-1559 交易的有效 gas 单价是？",
+    opts:[
+      "maxFeePerGas",
+      "baseFee + maxPriorityFee 总和",
+      "min(maxFeePerGas, baseFee + tip)",
+      "max(maxFeePerGas, baseFee)"
+    ], a:2,
+    why:"min(maxFee, baseFee + tip)。当 baseFee 突涨超过 maxFee，交易暂不被打包，等 baseFee 回落。"
+  },
+  { topic:"Gas/EVM", q:"合约调用 revert 时，已用的 gas：",
+    opts:["全额退还","退一半","不退，照扣","由矿工决定"],
+    a:2,
+    why:"状态回滚，但计算资源已消耗，gas 不退。所以前端要做 estimateGas + simulate。"
+  },
+  // LLM/agent
+  { topic:"LLM/Agent", q:"LLM 本质上在做什么？",
+    opts:[
+      "在数据库里查最相似的答案",
+      "根据上下文预测下一个 token 的概率分布",
+      "运行一个内置的逻辑推理引擎",
+      "调用搜索引擎并总结"
+    ], a:1,
+    why:"它是个条件概率模型 p(next_token | context)。所谓"推理"是大量训练后涌现的 pattern。"
+  },
+  { topic:"LLM/Agent", q:"一个最小 Agent loop 通常包含？",
+    opts:[
+      "Prompt → Response",
+      "Reason → Act (tool) → Observe → 回到 Reason",
+      "Embed → Search → Answer",
+      "Train → Eval → Deploy"
+    ], a:1,
+    why:"Agent 的核心是循环：思考下一步、调用工具、看结果、再思考。Workflow 则是把这循环固化成确定路径。"
+  },
+  { topic:"LLM/Agent", q:"任务路径非常固定（如：读 CSV → 清洗 → 写回数据库），最合适的设计是？",
+    opts:[
+      "Agent，每次让模型自己决定步骤",
+      "Workflow，写死步骤，关键节点用 LLM",
+      "纯 prompt，把所有需求塞进一句话",
+      "Fine-tune 一个新模型"
+    ], a:1,
+    why:"路径已知就别让 agent 自己探索，Workflow 更便宜、可观测、可复现。"
+  },
+];
+
+const quizEl = document.getElementById("quiz");
+const state = QUIZ.map(()=>({answered:false, correct:false}));
+QUIZ.forEach((q,i)=>{
+  const card = document.createElement("div");
+  card.className = "q";
+  card.innerHTML = `
+    <div class="qhead">
+      <div class="qtext">${i+1}. ${q.q}</div>
+      <div class="qtag">${q.topic}</div>
+    </div>
+    <div class="opts" id="opts-${i}">
+      ${q.opts.map((o,j)=>`<button data-i="${i}" data-j="${j}">${String.fromCharCode(65+j)}. ${o}</button>`).join("")}
+    </div>
+    <div class="explain" id="ex-${i}"><b>解析：</b>${q.why}</div>`;
+  quizEl.appendChild(card);
+});
+
+quizEl.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  const i = +b.dataset.i, j = +b.dataset.j;
+  if (state[i].answered) return;
+  state[i].answered = true;
+  state[i].correct = (j === QUIZ[i].a);
+  document.querySelectorAll(`#opts-${i} button`).forEach((btn,k)=>{
+    btn.disabled = true;
+    if (k === QUIZ[i].a) btn.classList.add("right");
+    else if (k === j) btn.classList.add("wrong");
+  });
+  document.getElementById(`ex-${i}`).classList.add("show");
+  updateScore();
+});
+
+function updateScore(){
+  const done = state.filter(s=>s.answered).length;
+  const right = state.filter(s=>s.correct).length;
+  document.getElementById("score").textContent =
+    `已答 ${done}/${QUIZ.length} · 答对 ${right}` + (done===QUIZ.length ? "  → " + (right===QUIZ.length?"满分 🎯":right>=7?"基础牢":"翻回卡片再看一遍") : "");
+}
+</script>
+</body>
+</html>

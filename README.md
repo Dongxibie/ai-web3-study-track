@@ -34,3 +34,12 @@ ai-web3-study-track/
 
 Learning progress tracked in logs/learning-log.md.
 Daily notes in daily-notes/YYYY-MM-DD.md.
+
+## Week 1 Deliverable
+
+Interactive single-file page covering wallet/signature/tx, gas/EVM execution, and LLM/agent/workflow.
+Includes 3 flippable concept cards, an EIP-1559 gas calculator, and a 9-question quiz.
+
+- Demo: [`demos/week1-interactive/`](demos/week1-interactive/) — open `index.html` directly.
+- Notes on what the agent did, hand edits, unreliable outputs, next steps: [demo README](demos/week1-interactive/README.md).
+- Multi-tool comparison prompt + dimensions (to run on Codex/Hermes next): [`notes/multi-tool-comparison.md`](notes/multi-tool-comparison.md).
