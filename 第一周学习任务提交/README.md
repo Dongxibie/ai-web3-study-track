@@ -8,7 +8,7 @@
 | GitHub 仓库 | https://github.com/Dongxibie/ai-web3-study-track |
 | Demo 源码目录 | https://github.com/Dongxibie/ai-web3-study-track/tree/main/demos/week1-interactive |
 | 多工具对比模板 | https://github.com/Dongxibie/ai-web3-study-track/blob/main/notes/multi-tool-comparison.md |
-| 截图 | 见同目录 `screenshots/`（cards / gas-calculator / quiz 三张） |
+| 截图 | 见下方 [§ 截图展示](#截图展示) 一节（位于 `./screenshots/`） |
 
 ---
 
@@ -125,6 +125,30 @@ Q5: 一笔 EIP-1559 交易的有效 gas 单价是？
 5. 启用 GitHub Pages 替代 raw.githack 作为稳定公开链接。
 6. 加一个 WebCrypto 签名 mini-demo（仅临时密钥对，**绝不接 MetaMask**），让用户亲手感受"签名 ≠ 暴露私钥"。
 7. 跑完 Codex / Hermes，把多工具对比表填满并写结论段。
+
+---
+
+## 截图展示
+
+> 截图位于 `./screenshots/`，三张分别对应 demo 的三个交互模块。
+
+### 1. 概念卡片 · cards
+
+![Week 1 三张概念卡片，中间一张翻到背面](./screenshots/8819a412975dee6736b79a0fefe3f897.png)
+
+展示三张可翻转卡片：左侧「钱包 / 签名 / 交易」正面、右侧「LLM / Agent / Workflow」正面，中间一张已翻面，呈现「为什么交易会失败但还扣 gas?」的延伸答案——验证 click-to-flip 交互正常工作。
+
+### 2. Gas 计算器 · gas-calculator
+
+![EIP-1559 Gas 计算器：模拟 baseFee 拖到 57 gwei 触发红色不会被打包警告](./screenshots/d66b7ab8081d868e95a2de54b63b9645.png)
+
+展示把"模拟 base fee"滑块拖到 **57 gwei**（已超过 maxFee = 40）时，"有效 gas 单价"区域显示为红色并附带 ⚠ "baseFee > maxFee, 不会被打包" 提示；同时右侧 tx payload 实时同步当前参数。这是教学场景里最重要的一个边界——比起 tip 被截断（橙色），baseFee 直接超出 maxFee 的红色态更能让人理解"为什么我的交易没上链"。
+
+### 3. Quiz 自检 · quiz
+
+![Quiz 答题反馈：错选标红，正确答案标绿，解析自动展开](./screenshots/d05670fa3f78b0da8d4213c2e8517d00.png)
+
+展示 quiz 答错后的即时反馈：用户选中的错误选项标红边框，正确选项自动高亮绿色边框，下方"解析"区块自动展开补充背景知识——验证判分与解释机制正常工作。
 
 ---
 
