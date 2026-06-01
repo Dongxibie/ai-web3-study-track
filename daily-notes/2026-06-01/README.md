@@ -1,528 +1,410 @@
-# Daily Note — 2026-06-01
-
-## AgentFi
-
-### 项目概述
-
-AgentFi 是一个结合 AI Agent 与 Web3 的智能资产管理系统。
-
-用户无需学习复杂的 DeFi 协议，也无需手动分析链上数据，只需要通过自然语言描述自己的目标，系统即可自动完成策略分析、风险评估、投资组合规划以及链上执行建议。
-
-例如：
-
-```text
-用户：
-我有1000 USDC，希望获得稳定收益，同时控制风险。
-
-Agent：
-已生成资产配置方案：
-
-50% 存入 Aave
-30% 质押 ETH
-20% 保留稳定币
-
-预期年化收益：
-4.8%~6.5%
-
-风险等级：
-低风险
-
-是否执行？
-```
-
-系统将生成对应的链上执行计划，并在用户确认后完成链上操作。
+# 🚀 AgentFi X — AI × Web3 Autonomous Execution System
 
 ---
 
-## 项目目标
+# 0. 项目定位（Team Shared Understanding）
 
-构建一个完整的 AI Agent + Web3 自动化资产管理平台。
+AgentFi X 是一个 **AI Agent 驱动的 Web3 自动执行系统**，允许用户通过自然语言输入资产管理目标，并在用户授权后执行链上交易（Swap / Deposit / Stake）。
 
-系统需要完成：
+核心目标不是"建议"，而是：
 
-```text
-用户需求理解
-↓
-链上数据获取
-↓
-风险分析
-↓
-策略生成
-↓
-执行计划生成
-↓
-用户确认
-↓
-链上执行
-↓
-资产监控
-```
-
-形成完整闭环。
+> 🧠 AI 生成策略 + 🧾 用户确认 + 🔗 链上真实执行
 
 ---
 
-## 核心功能
+# 1. 系统整体流程（必须统一理解）
 
-### 功能一：AI投资顾问
-
-用户输入：
+所有团队成员必须遵守以下数据流：
 
 ```text
-我有5000 USDC
-希望稳健投资
+User Input
+→ AI Agent（策略生成）
+→ Structured JSON Plan
+→ Frontend Render
+→ User Approval
+→ Execution Engine
+→ Blockchain Interaction
+→ Transaction Result Display
 ```
 
-系统自动分析：
+---
 
-- 用户目标
-- 风险偏好
-- 当前市场状态
-- 协议收益率
+# 2. 功能拆解（MVP Scope）
 
-生成投资方案。
+## 2.1 AI Agent Layer
 
-输出：
+### 输入：
+
+```text
+我想用100 USDC做低风险收益
+```
+
+### 输出（严格 JSON）：
 
 ```json
 {
-  "Aave": "50%",
-  "Lido": "30%",
-  "USDC": "20%"
-}
-```
-
----
-
-### 功能二：链上数据分析
-
-实时获取：
-
-- TVL
-- APY
-- Volume
-- Liquidity
-- Gas
-
-分析市场状态。
-
-例如：
-
-```text
-当前Aave APY：
-4.9%
-
-当前Lido APY：
-3.6%
-
-推荐：
-Aave优先
-```
-
----
-
-### 功能三：风险分析
-
-评估：
-
-- 协议历史运行时间
-- TVL变化
-- 审计状态
-- 流动性风险
-
-输出风险报告。
-
-例如：
-
-```text
-协议：
-Aave
-
-风险等级：
-低
-
-审计情况：
-已完成多次审计
-
-TVL：
-稳定增长
-```
-
----
-
-### 功能四：智能合约金库
-
-用户资产进入策略金库。
-
-主要功能：
-
-```text
-存款
-取款
-资产查询
-策略执行
-```
-
-用户始终拥有资产控制权。
-
----
-
-### 功能五：Agent任务规划
-
-将自然语言转换为链上任务。
-
-例如：
-
-```text
-把1000 USDC用于低风险收益
-```
-
-转换为：
-
-```json
-{
-  "action": "yield",
+  "goal": "yield",
   "risk": "low",
-  "amount": 1000
+  "budget": 100,
+  "steps": [
+    {
+      "action": "swap",
+      "from": "USDC",
+      "to": "ETH",
+      "ratio": 0.4
+    },
+    {
+      "action": "deposit",
+      "protocol": "Aave",
+      "asset": "USDC",
+      "ratio": 0.6
+    }
+  ]
 }
 ```
 
-Agent再根据规则生成执行计划。
+---
+
+## 2.2 Execution Engine
+
+支持：
+
+- Uniswap Swap
+- Aave Deposit
+- Lido Stake（optional）
 
 ---
 
-### 功能六：资产监控
+## 2.3 User Approval Layer（必须）
 
-持续监控：
-
-- APY变化
-- 风险变化
-- TVL变化
-
-例如：
+流程：
 
 ```text
-Aave收益下降15%
-
-建议重新配置资产
-```
-
-自动提醒用户。
-
----
-
-## 系统架构
-
-```text
-┌─────────────────────┐
-│      Frontend       │
-│ Next.js + React     │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│      AI Agent       │
-│ OpenAI / Claude     │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│   Task Planner      │
-└──────────┬──────────┘
-           │
- ┌─────────┼─────────┐
- ▼         ▼         ▼
-
-Market   Risk    Strategy
-Module   Module   Module
-
- └─────────┬─────────┘
-           ▼
-
-┌─────────────────────┐
-│ Execution Manager   │
-└──────────┬──────────┘
-           ▼
-
-┌─────────────────────┐
-│ Smart Contract      │
-└──────────┬──────────┘
-           ▼
-
-┌─────────────────────┐
-│ Ethereum / Base     │
-└─────────────────────┘
+AI生成策略
+→ UI展示
+→ 用户确认
+→ 执行链上交易
 ```
 
 ---
 
-## 技术实现
+## 2.4 Blockchain Layer
 
-### 前端
+- Sepolia / Base testnet
+- ethers.js interaction
+- tx tracking
 
-负责：
+---
 
-- 用户界面
-- 钱包连接
-- 聊天窗口
-- 策略展示
+## 2.5 Result System
 
-技术：
+必须返回：
+
+- tx hash
+- gas used
+- block number
+- status
+
+---
+
+# 3. 技术架构（统一标准）
 
 ```text
-Next.js
-React
-TypeScript
-TailwindCSS
+Frontend (Next.js)
+        ↓
+AI Agent (LLM)
+        ↓
+Planner (JSON Generator)
+        ↓
+Execution Engine
+        ↓
+Web3 Layer (ethers.js)
+        ↓
+Smart Contracts (Hardhat)
+        ↓
+Testnet Blockchain
 ```
 
 ---
 
-### 后端
-
-负责：
-
-- Agent调用
-- 数据管理
-- API服务
-
-技术：
+# 4. GitHub Repo Structure（强制统一）
 
 ```text
-NestJS
-Node.js
-PostgreSQL
-Prisma
+AgentFi-X/
+│
+├── frontend/        # UI + Chat + Wallet
+├── agent/           # AI strategy generator
+├── execution/       # swap / deposit logic
+├── contracts/       # Solidity contracts
+├── backend/         # API + orchestration
+├── scripts/         # deploy scripts
+│
+├── docs/
+│   ├── architecture.md
+│   ├── agent.md
+│   ├── execution.md
+│   └── demo.md
+│
+├── README.md
+└── package.json
 ```
 
 ---
 
-### Agent
+# 5. 团队分工（必须严格执行）
 
-负责：
+---
 
-- 理解用户需求
-- 调用工具
-- 分析数据
-- 生成策略
+## 5.1 AI Agent Engineer
 
-技术：
+### 负责模块：
+
+- agent/
+- prompt engineering
+- JSON schema design
+- strategy generation logic
+
+### 交付物：
+
+- strategy generator
+- structured output validator
+- prompt templates
+
+### 不负责：
+
+- UI
+- blockchain execution
+
+---
+
+## 5.2 Web3 Engineer
+
+### 负责模块：
+
+- contracts/
+- execution/
+- blockchain integration
+
+### 任务：
+
+- Uniswap swap
+- Aave deposit
+- Wallet signing
+- Hardhat deployment
+
+### 交付物：
+
+- smart contracts
+- execution SDK
+- tx handling
+
+---
+
+## 5.3 Frontend Engineer
+
+### 负责模块：
+
+- frontend/
+
+### 任务：
+
+- Chat UI
+- Wallet connect
+- Strategy visualization
+- Approval UI
+- Transaction display
+
+### 交付物：
+
+- full UI flow
+- user interaction system
+
+---
+
+## 5.4 Backend / Integration Engineer
+
+### 负责模块：
+
+- backend/
+
+### 任务：
+
+- API orchestration
+- Agent ↔ Execution bridge
+- data persistence
+- tx history storage
+
+### 交付物：
+
+- unified API layer
+- system integration
+- logging system
+
+---
+
+# 6. 协作规则（非常重要）
+
+## 6.1 数据契约（必须统一）
+
+所有模块必须使用 `StrategyPlan`，结构必须一致，否则不允许合并代码。
+
+---
+
+## 6.2 Git Workflow
 
 ```text
-OpenAI
-Claude
-LangGraph
+main
+ ├── dev
+ │    ├── feature/agent
+ │    ├── feature/web3
+ │    ├── feature/frontend
+ │    ├── feature/backend
 ```
 
 ---
 
-### Web3
-
-负责：
-
-- 钱包连接
-- 合约调用
-- 链上交互
-
-技术：
+## 6.3 Commit 规范
 
 ```text
-Ethers.js
-Wagmi
-Viem
+feat: add agent strategy generator
+fix: correct swap execution bug
+docs: update architecture
 ```
 
 ---
 
-### 智能合约
-
-负责：
-
-- 用户资产管理
-- 策略金库
-
-技术：
+## 6.4 API 协议统一
 
 ```text
-Solidity
-Hardhat
-OpenZeppelin
+POST /generate-strategy
+POST /execute-transaction
+GET  /tx-status
 ```
 
 ---
 
-## 开发阶段
+# 7. Claude Code / AI 协作方式（核心）
 
-### 第一阶段
+## 每个任务必须遵循：
 
-MVP
+### 输入：
 
-目标：
+- 当前模块代码
+- 目标功能
+
+### 输出：
+
+- 可运行代码
+- 不解释
+
+---
+
+## 示例任务：
 
 ```text
-用户聊天
-↓
-生成投资建议
-↓
-查看链上数据
+实现 Uniswap swap execution module
+要求：
+- ethers.js
+- 可调用
+- 返回 tx hash
 ```
-
-预计：1周
 
 ---
 
-### 第二阶段
+# 8. Demo 流程（评审标准）
 
-加入智能合约
-
-目标：
+必须完整演示：
 
 ```text
-钱包连接
-↓
-资产存款
-↓
-余额查询
+1. 输入自然语言
+2. AI生成JSON策略
+3. UI展示策略
+4. 用户点击确认
+5. 执行链上交易
+6. 返回tx hash
+7. Etherscan验证
 ```
-
-预计：1周
 
 ---
 
-### 第三阶段
+# 9. 非功能要求
 
-加入执行模块
+必须满足：
 
-目标：
+- 可运行（not mock）
+- 至少1笔testnet交易
+- 有真实tx proof
+- 可复现
+- 有日志记录
+
+---
+
+# 10. 项目边界
+
+禁止：
+
+- AI直接执行交易
+- 无结构输出
+- 无用户确认流程
+
+必须：
+
+- JSON schema
+- user approval
+- on-chain proof
+
+---
+
+# 11. 里程碑（团队执行节奏）
+
+## Day 1–2
+
+- frontend setup
+- agent prompt
+
+## Day 3–5
+
+- swap / deposit execution
+
+## Day 6–7
+
+- contract + integration
+
+## Day 8–10
+
+- demo + debugging
+
+---
+
+# 12. 项目一句话定义（统一对外）
+
+AgentFi X 是一个：
+
+> AI 驱动的 Web3 资产执行系统，将自然语言资产目标转换为可验证的链上交易执行流程
+
+---
+
+# 13. 团队沟通机制（必须执行）
+
+## 每日同步：
 
 ```text
-生成策略
-↓
-生成交易计划
-↓
-执行测试网交易
+- 今日完成
+- 当前阻塞
+- 下一步计划
 ```
 
-预计：1~2周
+---
+
+## 问题处理原则：
+
+- AI问题 → Agent engineer
+- 合约问题 → Web3 engineer
+- UI问题 → Frontend engineer
+- 集成问题 → Backend engineer
 
 ---
 
-### 第四阶段
+## 冲突原则：
 
-加入监控系统
-
-目标：
-
-```text
-资产跟踪
-收益跟踪
-风险提醒
-```
-
-预计：1周
-
----
-
-## 团队分工
-
-### AI工程师
-
-负责：
-
-- Prompt设计
-- Agent工作流
-- Tool Calling
-
----
-
-### Web3工程师
-
-负责：
-
-- Solidity
-- Hardhat
-- 链上交互
-
----
-
-### 前端工程师
-
-负责：
-
-- Dashboard
-- 钱包连接
-- 聊天系统
-
----
-
-### 后端工程师
-
-负责：
-
-- API
-- 数据库
-- 用户系统
-
----
-
-## 项目价值
-
-### 技术价值
-
-涉及：
-
-- AI Agent
-- LangGraph
-- Solidity
-- DeFi
-- Ethers.js
-- Next.js
-- PostgreSQL
-
-属于完整全栈项目。
-
----
-
-### 学习价值
-
-覆盖：
-
-- Agent设计
-- 智能合约开发
-- Web3交互
-- 系统架构设计
-
----
-
-### 简历价值
-
-能够体现：
-
-- AI工程能力
-- Web3开发能力
-- 全栈开发能力
-- 团队协作能力
-
----
-
-## 预计开发周期
-
-4人团队：
-
-```text
-3~5周
-```
-
-5人团队：
-
-```text
-2~4周
-```
-
-采用 Claude Code、Cursor、ChatGPT 等 Vibe Coding 工具辅助开发，可明显缩短编码时间与调试成本。
-
----
-
-## Tomorrow
-
-开始 AgentFi 项目开发。
+最终以"是否影响 Demo 流程"作为优先级判断
